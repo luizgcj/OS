@@ -1,0 +1,95 @@
+unit ProdutoRepository;
+
+interface
+
+Uses
+  Data.Db,
+  DataBase,
+  ConexaoBanco,
+  EnumConexao,
+  Produto,
+  OrdemServicoEntity;
+
+Type TProdutoRepository = Class
+  Private
+    Class Procedure ConsultaPadrao(ConexaoBanco : TConexaoBanco; ExibirInativos : Boolean = False);
+  Public
+    Class Function Get(DataBase : TDataBase; Produto : TProduto; ExibirInativos : Boolean = False; OrdemServico : TOrdemServicoEntity = nil):Boolean;
+    Class Function GetAll(DataBase : TDataBase; ExibirInativos : Boolean = False; OrdemServico : TOrdemServicoEntity = nil):TDataSet;
+    Class Procedure DataSetToProduto(DataSet : TDataSet; Produto : TProduto);
+End;
+
+implementation
+
+Class Procedure TProdutoRepository.ConsultaPadrao(ConexaoBanco : TConexaoBanco; ExibirInativos : Boolean = False);
+Begin
+  ConexaoBanco.SQL.Add('Select                                                                                            ');
+  ConexaoBanco.SQL.Add('Pe.CodigoProduto As Id,                                                                           ');
+  ConexaoBanco.SQL.Add('P.DescricProduto As Nome,                                                                         ');
+  ConexaoBanco.SQL.Add('Pe.PrVendVistaProduto as PrAmador,                                                                ');
+  ConexaoBanco.SQL.Add('Pe.PrVenVisAtacProd as PrProfissional,                                                            ');
+  ConexaoBanco.SQL.Add('Pe.QtdeAtualProduto,                                                                              ');
+  ConexaoBanco.SQL.Add('Pe.QuantUnidadeVenda As QuantidadeEmbalagem,                                                      ');
+  ConexaoBanco.SQL.Add('Un.Cod As UnidadeId,                                                                              ');
+  ConexaoBanco.SQL.Add('Un.Descricao As Unidade,                                                                          ');
+  ConexaoBanco.SQL.Add('Un.Decimais,                                                                                      ');
+  ConexaoBanco.SQL.Add('Case When Pe.TipoProduto = ''SE'' Then ''S'' Else ''P'' End As Tipo                               ');
+  ConexaoBanco.SQL.Add('From Produtos_Emp Pe                                                                              ');
+  ConexaoBanco.SQL.Add('Inner Join Produtos P On                                                                          ');
+  ConexaoBanco.SQL.Add('    P.CodigoProduto = Pe.CodigoProduto                                                            ');
+  ConexaoBanco.SQL.Add('Inner Join Abrev_Unid Un On                                                                       ');
+  ConexaoBanco.SQL.Add('    Un.Cod = Pe.UnidadeMinimaProd                                                                 ');
+  ConexaoBanco.SQL.Add('Where                                                                                             ');
+  ConexaoBanco.SQL.Add('Pe.CodigoProduto > 0                                                                          ');
+  IF NOT ExibirInativos THEN
+    ConexaoBanco.SQL.Add('And Pe.Ativo <> ''I''                                                                           ');
+  ConexaoBanco.SQL.Add('And Pe.CodigoEmp = :CodigoEmp                                                                     ');
+End;
+
+Class Function TProdutoRepository.Get(DataBase : TDataBase; Produto : TProduto; ExibirInativos : Boolean = False; OrdemServico : TOrdemServicoEntity = nil):Boolean;
+Var
+  ConexaoBanco : TConexaoBanco;
+Begin
+  Result := False;
+  ConexaoBanco := TConexaoBanco.Create(DataBase);
+  TProdutoRepository.ConsultaPadrao(ConexaoBanco, ExibirInativos);
+  ConexaoBanco.Sql.Add('And Pe.CodigoProduto = :Id ');
+
+  ConexaoBanco.Param.ParamByName('CodigoEmp').AsInteger := DataBase.CodigoEmpresa;
+  ConexaoBanco.Param.ParamByName('Id').AsInteger := Produto.Id;
+
+  TProdutoRepository.DataSetToProduto(ConexaoBanco.DataSetFactory.GetDataSet(TConexao.Empresa, ConexaoBanco.sql.Text, ConexaoBanco.Param), Produto);
+  if Produto.Id <> 0 then
+    Result := True;
+End;
+
+Class Function TProdutoRepository.GetAll(DataBase : TDataBase; ExibirInativos : Boolean = False; OrdemServico : TOrdemServicoEntity = nil):TDataSet;
+Var
+  ConexaoBanco : TConexaoBanco;
+Begin
+  ConexaoBanco := TConexaoBanco.Create(DataBase);
+  TProdutoRepository.ConsultaPadrao(ConexaoBanco, ExibirInativos);
+  ConexaoBanco.Param.ParamByName('CodigoEmp').AsInteger := DataBase.CodigoEmpresa;
+  Result := ConexaoBanco.DataSetFactory.GetDataSet(TConexao.Empresa, ConexaoBanco.sql.Text, ConexaoBanco.Param);
+End;
+
+Class Procedure TProdutoRepository.DataSetToProduto(DataSet : TDataSet; Produto : TProduto);
+Begin
+  if (Not DataSet.Eof) then
+  Begin
+    Produto.Id := DataSet.FieldByName('Id').AsInteger;
+    Produto.Nome := DataSet.FieldByName('Nome').AsString;
+    Produto.ValorUnitarioAmador := DataSet.FieldByName('PrAmador').AsFloat;
+    Produto.ValorUnitarioProfissional := DataSet.FieldByName('PrProfissional').AsFloat;
+    Produto.Tipo := DataSet.FieldByName('Tipo').AsString;
+    Produto.Estoque := DataSet.FieldByName('QtdeAtualProduto').AsFloat;
+    Produto.QuantidadeEmbalagem := DataSet.FieldByName('QuantidadeEmbalagem').AsFloat;
+    Produto.UnidadeId := DataSet.FieldByName('UnidadeId').AsInteger;
+    Produto.Unidade := DataSet.FieldByName('Unidade').AsString;
+    Produto.Decimais := DataSet.FieldByName('Decimais').AsInteger;
+  End
+  else
+    Produto.Id := 0;
+End;
+
+end.

@@ -1,0 +1,136 @@
+unit Consulta_Padrao;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, cxGraphics, cxControls, cxLookAndFeels,
+  cxLookAndFeelPainters, cxStyles, cxCustomData, cxFilter, cxData, cxDataStorage, cxEdit,
+  cxNavigator, cxDataControllerConditionalFormattingRulesManagerDialog, Data.DB,
+  cxDBData, Vcl.ExtCtrls, cxGridLevel, cxClasses, cxGridCustomView,
+  cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGrid,
+  Vcl.StdCtrls, Vcl.Buttons, DataBase, Datasnap.DBClient, dxSkinsCore,
+  dxSkinBlack, dxSkinBlue, dxSkinBlueprint, dxSkinCaramel, dxSkinCoffee,
+  dxSkinDarkRoom, dxSkinDarkSide, dxSkinDevExpressDarkStyle,
+  dxSkinDevExpressStyle, dxSkinFoggy, dxSkinGlassOceans, dxSkinHighContrast,
+  dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
+  dxSkinMcSkin, dxSkinMetropolis, dxSkinMetropolisDark, dxSkinMoneyTwins,
+  dxSkinOffice2007Black, dxSkinOffice2007Blue, dxSkinOffice2007Green,
+  dxSkinOffice2007Pink, dxSkinOffice2007Silver, dxSkinOffice2010Black,
+  dxSkinOffice2010Blue, dxSkinOffice2010Silver, dxSkinOffice2013DarkGray,
+  dxSkinOffice2013LightGray, dxSkinOffice2013White, dxSkinOffice2016Colorful,
+  dxSkinOffice2016Dark, dxSkinPumpkin, dxSkinSeven, dxSkinSevenClassic,
+  dxSkinSharp, dxSkinSharpPlus, dxSkinSilver, dxSkinSpringTime, dxSkinStardust,
+  dxSkinSummer2008, dxSkinTheAsphaltWorld, dxSkinsDefaultPainters,
+  dxSkinValentine, dxSkinVisualStudio2013Blue, dxSkinVisualStudio2013Dark,
+  dxSkinVisualStudio2013Light, dxSkinVS2010, dxSkinWhiteprint,
+  dxSkinXmas2008Blue, dxDateRanges;
+const
+  UM_MYMESSAGE = WM_USER + 1001;
+
+type
+  TFrConsulta_Padrao = class(TForm)
+    cxGridLvVw: TcxGridDBTableView;
+    cxGridLv: TcxGridLevel;
+    cxGrid: TcxGrid;
+    pnlBotoes: TPanel;
+    BtnDesistir: TBitBtn;
+    btnAtualizar: TBitBtn;
+    procedure BtnDesistirClick(Sender: TObject);
+    procedure btnAtualizarClick(Sender: TObject);
+    procedure cxGridLvVwKeyPress(Sender: TObject; var Key: Char);
+    procedure cxGridLvVwDblClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
+  private
+    { Private declarations }
+    procedure umMyMessage(var Message: TMessage); message UM_MYMESSAGE;
+    Function IsFocused():Boolean;
+  Protected
+    { Protected declarations }
+    _DataBase : TDataBase;
+    _DataSet : TDataSet;
+    _DataSource : TDataSource;
+
+    Procedure Atualizar(); virtual;
+  public
+    { Public declarations }
+    Constructor Create(AOwner:Tcomponent; DataBase : TDataBase);
+  end;
+
+var
+  FrConsulta_Padrao: TFrConsulta_Padrao;
+
+implementation
+
+{$R *.dfm}
+
+type
+  TcxGridTableControllerAccess = class (TcxGridTableController);
+  TcxGridFindPanelAccess = class(TcxGridFindPanel);
+
+procedure TFrConsulta_Padrao.btnAtualizarClick(Sender: TObject);
+begin
+  Atualizar();
+end;
+
+procedure TFrConsulta_Padrao.BtnDesistirClick(Sender: TObject);
+begin
+  Close();
+end;
+
+Constructor TFrConsulta_Padrao.Create(AOwner:TComponent; DataBase : TDataBase );
+Begin
+  Inherited Create(AOwner);
+  Self._DataBase := DataBase;
+End;
+
+procedure TFrConsulta_Padrao.cxGridLvVwDblClick(Sender: TObject);
+begin
+  Atualizar();
+end;
+
+procedure TFrConsulta_Padrao.cxGridLvVwKeyPress(Sender: TObject; var Key: Char);
+begin
+  if key = #9 then
+  begin
+    if not IsFocused() then
+      PostMessage(Handle, UM_MYMESSAGE, 0, 0);
+  end;
+
+  if (key = #13) then
+    Atualizar();
+end;
+
+procedure TFrConsulta_Padrao.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if key = #9 then
+  begin
+    cxGridLvVw.DataController.SetFocus;
+    Exit;
+  end;
+end;
+
+procedure TFrConsulta_Padrao.FormShow(Sender: TObject);
+begin
+  PostMessage(Handle, UM_MYMESSAGE, 0, 0);
+end;
+
+Procedure TFrConsulta_Padrao.Atualizar();
+Begin
+  Close();
+End;
+
+procedure TFrConsulta_Padrao.umMyMessage(var Message: TMessage);
+begin
+  TcxGridFindPanelAccess(TcxGridTableControllerAccess(cxGridLvVw.Controller).FindPanel).Edit.SetFocus;
+end;
+
+Function TFrConsulta_Padrao.IsFocused():Boolean;
+begin
+  result := TcxGridFindPanelAccess(TcxGridTableControllerAccess(cxGridLvVw.Controller).FindPanel).Edit.Focused;
+end;
+
+
+
+end.

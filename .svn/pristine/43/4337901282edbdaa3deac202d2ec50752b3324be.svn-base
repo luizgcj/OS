@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2019/02/23 12:01:45.000.116,E:\FontesSVN\OrdemServico\View\InformacoesCartao.dfm=E:\FontesSVN\OrdemServico\Unit1.dfm</Transaction>
+    <Transaction>2019/06/19 08:48:54.000.366,E:\FontesSVN\OrdemServico\View\FechamentoOS.dfm=E:\FontesSVN\OrdemServico\Unit1.dfm</Transaction>
+    <Transaction>2019/10/08 14:15:00.000.979,E:\FontesSVN\OrdemServico\View\CadastroCliente.dfm=E:\FontesSVN\OrdemServico\Unit1.dfm</Transaction>
+    <Transaction>2019/10/08 14:20:31.000.213,E:\FontesSVN\OrdemServico\View\ConsultaBairros.dfm=E:\FontesSVN\OrdemServico\Unit2.dfm</Transaction>
+    <Transaction>2019/10/08 14:21:08.000.081,E:\FontesSVN\OrdemServico\View\ConsultaCidades.dfm=E:\FontesSVN\OrdemServico\Unit2.dfm</Transaction>
+    <Transaction>2019/10/29 17:15:06.000.847,D:\FontesSVN\Diversos\OrdemServico\trunk\Unit1.dfm=D:\FontesSVN\Diversos\OrdemServico\trunk\View\RelComissoes.dfm</Transaction>
+    <Transaction>2019/12/05 16:22:33.000.957,D:\FontesSVN\Diversos\OrdemServico\trunk\Unit1.dfm=D:\FontesSVN\Diversos\OrdemServico\trunk\View\Consulta_Bairro.dfm</Transaction>
+    <Transaction>2019/12/05 17:08:03.000.360,D:\FontesSVN\Diversos\OrdemServico\trunk\View\FrConsulta_Bairro.dfm=D:\FontesSVN\Diversos\OrdemServico\trunk\Unit1.dfm</Transaction>
+    <Transaction>2019/12/05 17:13:42.000.347,D:\FontesSVN\Diversos\OrdemServico\trunk\Unit1.dfm=D:\FontesSVN\Diversos\OrdemServico\trunk\View\Consulta_Bairro.dfm</Transaction>
+    <Transaction>2019/12/06 08:43:02.000.876,D:\FontesSVN\Diversos\OrdemServico\trunk\View\Consulta_Cliente.dfm=D:\FontesSVN\Diversos\OrdemServico\trunk\Unit1.dfm</Transaction>
+    <Transaction>2019/12/06 08:44:32.000.638,D:\FontesSVN\Diversos\OrdemServico\trunk\View\Consulta_Cidade.dfm=D:\FontesSVN\Diversos\OrdemServico\trunk\Unit2.dfm</Transaction>
+  </Transactions>
+</BorlandProject>
